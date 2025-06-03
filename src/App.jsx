@@ -4,7 +4,7 @@ import Login from './pages/Login';
 import AlumnoPage from './pages/AlumnoPage';
 import CursosAlumPage from './pages/CursosAlumPage';
 import MisCalificaciones from './pages/CalificacionesPage';
-
+import Cursos from './pages/CursosPage';
 function App() {
   return (
     <Routes>
@@ -14,6 +14,7 @@ function App() {
       <Route path="/alumno" element={<AlumnoPage />} /> 
       <Route path="/mis-cursos" element={<CursosAlumPage />} /> 
       <Route path="/mis-calificaciones" element={<MisCalificaciones />} /> 
+      <Route path="/cursos" element={<Cursos />} /> 
     </Routes>
   );
 }
