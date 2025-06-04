@@ -1,47 +1,80 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { login } from '../redux/actions/authActions';
 import { useNavigate } from 'react-router-dom';
+import {
+  Card,
+  Input,
+  Button,
+  Typography,
+} from '@material-tailwind/react';
 
 const Login = () => {
   const [form, setForm] = useState({ email: '', password: '' });
-  const [error, setError] = useState('');
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const { loading, error, userInfo } = useSelector(state => state.auth);
+  console.log('userInfo:', userInfo);
+
+useEffect(() => {
+
+  if (userInfo && userInfo.role) {
+    if (userInfo.role === 'alumno') navigate('/alumno');
+    else if (userInfo.role === 'profesor') navigate('/profesor');
+    else if (userInfo.role === 'superadmin') navigate('/admin');
+  }
+}, [userInfo, navigate]);
+
 
   const handleChange = e => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = e => {
     e.preventDefault();
-    setError('');
-    try {
-      const res = await axios.post('http://localhost:8000/api/auth/login', form);
-
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('user', JSON.stringify(res.data.user));
-
-      const role = res.data.user.role;
-      if (role === 'alumno') navigate('/alumno');
-      else if (role === 'profesor') navigate('/profesor');
-      else if (role === 'superadmin') navigate('/admin');
-    } catch (err) {
-      setError(err.response?.data?.message || 'Error al iniciar sesión');
-    }
+    dispatch(login(form.email, form.password));
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 mt-10 bg-white shadow-lg rounded-2xl">
-      <h2 className="text-2xl font-bold mb-4 text-center">Iniciar Sesión</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input name="email" type="email" placeholder="Correo electrónico" value={form.email} onChange={handleChange} className="w-full p-2 border rounded" required />
-        <input name="password" type="password" placeholder="Contraseña" value={form.password} onChange={handleChange} className="w-full p-2 border rounded" required />
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <Card color="white" shadow={true} className="p-8 w-96">
+        <Typography variant="h4" color="blue-gray" className="text-center">
+          Iniciar Sesión
+        </Typography>
 
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+        <form onSubmit={handleSubmit} className="mt-8 mb-2 w-full">
+          <div className="mb-4 flex flex-col gap-6">
+            <Input
+              name="email"
+              label="Correo electrónico"
+              size="lg"
+              value={form.email}
+              onChange={handleChange}
+              required
+            />
+            <Input
+              name="password"
+              label="Contraseña"
+              type="password"
+              size="lg"
+              value={form.password}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-        <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
-          Ingresar
-        </button>
-      </form>
+          {error && (
+            <Typography color="red" className="text-sm text-center mt-2">
+              {error}
+            </Typography>
+          )}
+
+          <Button type="submit" className="mt-6" fullWidth variant="outlined" disabled={loading}>
+            {loading ? 'Ingresando...' : 'Ingresar'}
+          </Button>
+        </form>
+      </Card>
     </div>
   );
 };

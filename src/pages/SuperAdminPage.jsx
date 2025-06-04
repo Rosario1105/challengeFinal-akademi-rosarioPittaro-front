@@ -1,109 +1,91 @@
-import { useEffect, useState } from "react";
-import axios from 'axios';
-import { 
-    Card,
-    CardBody,
-    Typography,
-    List,
-    ListItem,
-    ListItemPrefix,
-    Tabs,
-    TabsHeader,
-    Tab
-} from "@material-tailwind/react";
-import { UserGroupIcon, AcademicCapIcon } from "@heroicons/react/24/solid";
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { Typography, Card, CardBody } from '@material-tailwind/react';
+import TablaDinamica from '../components/tablaDinam';
+import ModalUsuario from '../components/editarUsuarioMod';
+import { listUsers, deleteUserById, createUser, updateUser } from '../redux/actions/userActions';
+
+function SuperAdminPage() {
+      console.log('SuperAdminPage renderizado');
+
+      const dispatch = useDispatch();
+  const { users, loading, error } = useSelector((state) => state.users);
+  console.log('Users redux:', users);
 
 
+  const [modalVisible, setModalVisible] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
 
-const SuperAdminPage = () => {
-    const [usuarios, setUsuarios ] = useState([]);
-    const [cursos, setCursos] = useState([]);
-    const [activeTab, setActiveTab] = useState('usuarios');
+  useEffect(() => {
+    dispatch(listUsers());
+  }, [dispatch]);
 
-    const token = localStorage.getItem('token');
+  const handleEdit = (user) => {
+    setEditingUser(user);
+    setModalVisible(true);
+  };
 
-    useEffect(() =>{
-        const fetchData = async () => {
-            try{
-                const usersRes = await axios.get("http://localhost:8000/api/users",{
-                    headers: {Authorization: `Bearer ${token}`},
-                });
-                console.log('Usuarios:' , usersRes.data);
-                
-                const coursesRes = await axios.get("http://localhost:8000/api/courses", {
-                    headers: {Authorization: `Bearer ${token}`},
-                });
-                setUsuarios(usersRes.data);
-                setCursos(coursesRes.data);
-            } catch (err){
-                console.error('Error al cargar datos', err);
-            }
-        };
-        fetchData();
-    }, [token]);
+  const handleDelete = (userId) => {
+    if (window.confirm('¿Seguro que querés eliminar este usuario?')) {
+      dispatch(deleteUserById(userId));
+    }
+  };
 
- return (
-    <div className="max-w-5xl mx-auto p-6">
-      <Typography variant="h4" className="mb-6">
-        Panel de Superadmin
+  const handleCreate = () => {
+    setEditingUser(null);
+    setModalVisible(true);
+  };
+
+  const handleSave = (formData) => {
+    if (editingUser) {
+      dispatch(updateUser(editingUser._id || editingUser.id, formData));
+    } else {
+      dispatch(createUser(formData));
+    }
+    setModalVisible(false);
+  };
+
+  const columnas = [
+    { key: 'name', label: 'Nombre' },
+    { key: 'email', label: 'Email' },
+    { key: 'role', label: 'Rol' },
+  ];
+
+  return (
+    <div className="p-6 bg-gray-50 min-h-screen">
+      <Typography variant="h3" className="mb-6 text-center text-blue-700">
+        Gestión de Usuarios
       </Typography>
 
-      <Tabs value={activeTab}>
-        <TabsHeader>
-          <Tab value="usuarios" onClick={() => setActiveTab("usuarios")}>
-            Usuarios
-          </Tab>
-          <Tab value="cursos" onClick={() => setActiveTab("cursos")}>
-            Cursos
-          </Tab>
-        </TabsHeader>
+      {loading && <p>Cargando usuarios...</p>}
+      {error && <p className="text-red-500">{error}</p>}
 
-        {activeTab === "usuarios" && (
-          <Card className="mt-6">
-            <CardBody>
-              <List>
-                {usuarios.map((u) => (
-                  <ListItem key={u._id}>
-                    <ListItemPrefix>
-                      <UserGroupIcon className="h-5 w-5 text-indigo-500" />
-                    </ListItemPrefix>
-                    <div>
-                      <Typography variant="h6">{u.name}</Typography>
-                      <Typography variant="small" color="gray">
-                        Rol: {u.role} — Email: {u.email}
-                      </Typography>
-                    </div>
-                  </ListItem>
-                ))}
-              </List>
-            </CardBody>
-          </Card>
-        )}
+      {!loading && !error && (
+        <Card className="shadow-lg">
+          <CardBody>
+            <TablaDinamica
+              data={users}
+              columnas={columnas}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              onCreate={handleCreate}
+              showSearch={true}
+              showFilter={true}
+              title="Usuarios del sistema"
+            />
+          </CardBody>
+        </Card>
+      )}
 
-        {activeTab === "cursos" && (
-          <Card className="mt-6">
-            <CardBody>
-              <List>
-                {cursos.map((c) => (
-                  <ListItem key={c._id}>
-                    <ListItemPrefix>
-                      <AcademicCapIcon className="h-5 w-5 text-blue-500" />
-                    </ListItemPrefix>
-                    <div>
-                      <Typography variant="h6">{c.title}</Typography>
-                      <Typography variant="small" color="gray">
-                        Profesor: {c.profesor?.name || "No asignado"}
-                      </Typography>
-                    </div>
-                  </ListItem>
-                ))}
-              </List>
-            </CardBody>
-          </Card>
-        )}
-      </Tabs>
+      {modalVisible && (
+        <ModalUsuario
+          user={editingUser}
+          onClose={() => setModalVisible(false)}
+          onSave={handleSave}
+        />
+      )}
     </div>
   );
-};
+}
 
 export default SuperAdminPage;

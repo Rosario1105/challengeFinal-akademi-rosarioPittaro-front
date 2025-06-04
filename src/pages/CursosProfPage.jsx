@@ -1,45 +1,46 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import TablaDinamica from "../components/TablaDinamica";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
-const ProfesorCursos = () => {
+const CursosDelProfesor = () => {
   const [cursos, setCursos] = useState([]);
-  const token = localStorage.getItem("token");
-  const user = JSON.parse(localStorage.getItem("user"));
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchCursos = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:8000/api/courses/professor/${user.id}`,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        const token = localStorage.getItem('token');
+        const res = await axios.get('/api/courses/profesor', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         setCursos(res.data);
       } catch (err) {
-        console.error("Error al obtener cursos:", err);
+        setError('Error al cargar cursos');
+      } finally {
+        setLoading(false);
       }
     };
     fetchCursos();
-  }, [token, user]);
+  }, []);
 
-  const columns = [
-    { key: "title", label: "Curso" },
-    { key: "description", label: "Descripción" },
-    {
-      key: "studentsCount",
-      label: "Inscriptos",
-      render: (value, row) => row.students?.length || 0,
-    },
-  ];
+  if (loading) return <p>Cargando cursos...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
-    <TablaDinamica
-      title="Mis Cursos"
-      data={cursos}
-      columns={columns}
-      searchKeys={["title", "description"]}
-    />
+    <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {cursos.length === 0 ? (
+        <p>No tenés cursos creados aún.</p>
+      ) : (
+        cursos.map(curso => (
+          <div key={curso._id} className="border rounded shadow p-4 bg-white">
+            <h3 className="text-xl font-semibold mb-2">{curso.title}</h3>
+            <p className="text-gray-700">{curso.description}</p>
+            {/* Podés agregar botones o links para editar, borrar, etc */}
+          </div>
+        ))
+      )}
+    </div>
   );
 };
 
-export default ProfesorCursos;
+export default CursosDelProfesor;

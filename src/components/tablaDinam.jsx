@@ -1,127 +1,142 @@
-import {
-  Card,
-  CardHeader,
-  Input,
-  Typography,
-  Button,
-  CardBody,
-  CardFooter,
-  Tabs,
-  TabsHeader,
-  Tab,
-  IconButton,
-  Tooltip,
-  Chip,
-} from "@material-tailwind/react";
-import { PencilIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { useState } from "react";
+import React, { useState, useMemo } from 'react';
 
 const TablaDinamica = ({
-  title,
   data,
-  columns,
-  searchKeys = [],
-  filters = [],
+  columnas,
   onEdit,
+  onDelete,
+  onCreate,
+  showSearch = false,
+  showFilter = false,
+  title,
 }) => {
-  const [search, setSearch] = useState("");
-  const [filtro, setFiltro] = useState(filters[0]?.value || "");
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterRole, setFilterRole] = useState('');
 
-  const filtrar = (item) => {
-    const coincideBusqueda = searchKeys.some((key) =>
-      item[key]?.toLowerCase().includes(search.toLowerCase())
-    );
-    const coincideFiltro = filtro === "" || item.role === filtro || item.status === filtro;
-    return coincideBusqueda && coincideFiltro;
-  };
+  // Filtrar y buscar en la data
+  const filteredData = useMemo(() => {
+    let filtered = data;
 
-  const rows = data.filter(filtrar);
+    if (showFilter && filterRole) {
+      filtered = filtered.filter(item => item.role === filterRole);
+    }
+
+    if (showSearch && searchTerm) {
+      const lowerSearch = searchTerm.toLowerCase();
+      filtered = filtered.filter(item =>
+        columnas.some(col => {
+          const value = item[col.key];
+          if (!value) return false;
+          return value.toString().toLowerCase().includes(lowerSearch);
+        })
+      );
+    }
+
+    return filtered;
+  }, [data, filterRole, searchTerm, columnas, showFilter, showSearch]);
+
+  // Obtener roles únicos para filtro
+  const roles = useMemo(() => {
+    const setRoles = new Set(data.map(u => u.role));
+    return Array.from(setRoles);
+  }, [data]);
 
   return (
-    <Card className="h-full w-full mt-10">
-      <CardHeader floated={false} shadow={false} className="rounded-none">
-        <div className="mb-4 flex items-center justify-between gap-8">
-          <div>
-            <Typography variant="h5" color="blue-gray">
-              {title}
-            </Typography>
-            <Typography color="gray" className="mt-1 font-normal">
-              Filtrá, buscá o editá los elementos de la tabla.
-            </Typography>
-          </div>
-        </div>
+    <div>
+      {title && <h2 className="text-xl font-semibold mb-4">{title}</h2>}
 
-        <div className="flex flex-col md:flex-row justify-between gap-4">
-          {filters.length > 0 && (
-            <Tabs value={filtro} className="w-full md:w-max">
-              <TabsHeader>
-                {filters.map(({ label, value }) => (
-                  <Tab key={value} value={value} onClick={() => setFiltro(value)}>
-                    {label}
-                  </Tab>
-                ))}
-              </TabsHeader>
-            </Tabs>
+      <div className="flex gap-4 mb-4">
+        {showSearch && (
+          <input
+            type="text"
+            placeholder="Buscar..."
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+            className="border px-2 py-1 rounded"
+          />
+        )}
+
+        {showFilter && (
+          <select
+            value={filterRole}
+            onChange={e => setFilterRole(e.target.value)}
+            className="border px-2 py-1 rounded"
+          >
+            <option value="">Todos los roles</option>
+            {roles.map(role => (
+              <option key={role} value={role}>
+                {role}
+              </option>
+            ))}
+          </select>
+        )}
+
+        {onCreate && (
+          <button
+            onClick={onCreate}
+            className="ml-auto bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700"
+          >
+            Ingresar Profesor
+          </button>
+        )}
+      </div>
+
+      <table className="min-w-full border border-gray-300 rounded">
+        <thead>
+          <tr className="bg-gray-200">
+            {columnas.map(col => (
+              <th key={col.key} className="border px-4 py-2 text-left">
+                {col.label}
+              </th>
+            ))}
+            {(onEdit || onDelete) && <th className="border px-4 py-2">Acciones</th>}
+          </tr>
+        </thead>
+        <tbody>
+          {filteredData.length === 0 && (
+            <tr>
+              <td colSpan={columnas.length + 1} className="text-center py-4">
+                No hay datos para mostrar
+              </td>
+            </tr>
           )}
 
-          <div className="w-full md:w-72">
-            <Input
-              label="Buscar"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              icon={<MagnifyingGlassIcon className="h-5 w-5" />}
-            />
-          </div>
-        </div>
-      </CardHeader>
-
-      <CardBody className="overflow-auto px-0">
-        <table className="mt-4 w-full min-w-max table-auto text-left">
-          <thead>
-            <tr className="bg-blue-gray-50/50">
-              {columns.map((col) => (
-                <th key={col.key} className="p-4">
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-normal"
-                  >
-                    {col.label}
-                  </Typography>
-                </th>
+          {filteredData.map(item => (
+            <tr key={item._id || item.id} className="hover:bg-gray-100">
+              {columnas.map(col => (
+                <td key={col.key} className="border px-4 py-2">
+                  {item[col.key]}
+                </td>
               ))}
-              <th className="p-4">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row, i) => (
-              <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                {columns.map((col) => (
-                  <td key={col.key} className="p-4">
-                    {col.render ? col.render(row[col.key], row) : row[col.key]}
-                  </td>
-                ))}
-                <td className="p-4">
+              {(onEdit || onDelete) && (
+                <td className="border px-4 py-2 space-x-2">
                   {onEdit && (
-                    <Tooltip content="Editar">
-                      <IconButton variant="text" onClick={() => onEdit(row)}>
-                        <PencilIcon className="h-4 w-4" />
-                      </IconButton>
-                    </Tooltip>
+                    <button
+                      onClick={() => onEdit(item)}
+                      className="text-blue-600 hover:underline"
+                    >
+                      Editar
+                    </button>
+                  )}
+                  {onDelete && (
+                    <button
+                      onClick={() => {
+                        if (window.confirm('¿Estás seguro de eliminar este usuario?')) {
+                          onDelete(item._id || item.id);
+                        }
+                      }}
+                      className="text-red-600 hover:underline"
+                    >
+                      Eliminar
+                    </button>
                   )}
                 </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </CardBody>
-
-      <CardFooter className="flex justify-end p-4 border-t border-blue-gray-50">
-        <Typography variant="small" color="gray">
-          Total: {rows.length} elemento(s)
-        </Typography>
-      </CardFooter>
-    </Card>
+              )}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 };
 
