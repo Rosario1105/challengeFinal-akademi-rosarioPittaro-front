@@ -8,34 +8,51 @@ import {
   Button,
   Typography,
 } from '@material-tailwind/react';
+import { useLocation } from 'react-router-dom';
 
 const Login = () => {
   const [form, setForm] = useState({ email: '', password: '' });
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const { loading, error, userInfo } = useSelector(state => state.auth);
   console.log('userInfo:', userInfo);
 
 useEffect(() => {
-
-  if (userInfo && userInfo.role) {
-    if (userInfo.role === 'alumno') navigate('/alumno');
-    else if (userInfo.role === 'profesor') navigate('/profesor');
-    else if (userInfo.role === 'superadmin') navigate('/admin');
-  }
-}, [userInfo, navigate]);
+  console.log('Login useEffect:', { userRole: userInfo?.role, currentPath: location.pathname });
+  if (userInfo?.role) {
+    let path = '/'
+    switch (userInfo.role) {
+        case 'alumno':
+         path= '/alumno';
+          break;
+        case 'profesor':
+          path= '/profesor';
+          break;
+        case 'superadmin':
+          path= '/admin';
+          break;
+        default:
+          navigate('/');
+      }
+      if(location.pathname !== path){
+        navigate(path, {replace: true});
+      }
+    }
+}, [userInfo, navigate, location.pathname]);
 
 
   const handleChange = e => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = e => {
+    const handleSubmit = async e => {
     e.preventDefault();
-    dispatch(login(form.email, form.password));
+    try {
+      await dispatch(login(form.email, form.password));
+    } catch (error) {}
   };
-
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <Card color="white" shadow={true} className="p-8 w-96">

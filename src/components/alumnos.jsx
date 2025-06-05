@@ -7,13 +7,24 @@ const AlumnosDelProfesor = () => {
   const [alumnos, setAlumnos] = useState([]);
   const [alumnoSeleccionado, setAlumnoSeleccionado] = useState(null);
 
-  useEffect(() => {
-    axios.get('/api/enrollments/alumnos-profesor', {
+ useEffect(() => {
+  axios
+    .get('/api/enrollments/alumnos-profesor', {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
-    }).then(res => setAlumnos(res.data));
-  }, []);
+    })
+    .then(res => {
+      console.log('Respuesta del backend:', res.data);
+
+      const responseData = Array.isArray(res.data)
+        ? res.data
+        : res.data.alumnos || res.data.data || [];
+
+      setAlumnos(responseData);
+    });
+}, []);
+
 
   const handleClickAlumno = (alumno) => {
     setAlumnoSeleccionado(alumno);

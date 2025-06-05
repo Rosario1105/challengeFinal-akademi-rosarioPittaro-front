@@ -3,7 +3,8 @@ import { Navigate, Outlet } from "react-router-dom";
 const PrivateRoute = ({ allowedRoles }) => {
   let user = null;
   try {
-    user = JSON.parse(localStorage.getItem('user')); // ojo acá, en authActions guardas en 'userInfo'
+    const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+    user = userInfo || null;
   } catch (error) {
     user = null;
   }
@@ -21,3 +22,4 @@ const PrivateRoute = ({ allowedRoles }) => {
 };
 
 export default PrivateRoute;
+

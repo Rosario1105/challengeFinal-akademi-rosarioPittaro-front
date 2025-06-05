@@ -20,16 +20,17 @@ export const login = (email, password) => async (dispatch) => {
 
     dispatch({ 
       type: 'AUTH_LOGIN_SUCCESS', 
-      payload: data.user
+      payload: data.user  // Aquí debes usar `data.user`, no `res.data.user`
     });
 
     localStorage.setItem('token', data.token);
-    localStorage.setItem('userInfo', JSON.stringify(data.user ? data.user : data));
+    localStorage.setItem('userInfo', JSON.stringify(data.user));
 
   } catch (error) {
     dispatch({ type: 'AUTH_LOGIN_FAIL', payload: 'Error de red. Intenta más tarde.' });
   }
 };
+
 
 export const logout = () => (dispatch) => {
   localStorage.removeItem("token");

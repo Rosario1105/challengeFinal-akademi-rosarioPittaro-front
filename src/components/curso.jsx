@@ -28,7 +28,7 @@ const CrearCurso = () => {
   try {
     const token = localStorage.getItem("token");
     const res = await axios.post(
-      "/api/courses",
+     "http://localhost:8000/api/courses",
       form,
       {
         headers: { Authorization: `Bearer ${token}` },

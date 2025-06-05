@@ -10,7 +10,7 @@ const CursosDelProfesor = () => {
     const fetchCursos = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await axios.get('/api/courses/profesor', {
+        const res = await axios.get('/api/courses/profesorId/List', {
           headers: { Authorization: `Bearer ${token}` },
         });
         setCursos(res.data);
