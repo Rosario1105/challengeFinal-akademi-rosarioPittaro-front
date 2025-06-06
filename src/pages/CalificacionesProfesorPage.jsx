@@ -53,9 +53,12 @@ const CalificacionesProfesorPage = () => {
       setEditing(null);
       setNota("");
       setFeedback("");
-      window.location.reload(); // simple reload para refrescar datos
+      window.location.reload(); 
     } catch (err) {
-      console.error("Error al calificar:", err.response?.data?.msg || err.message);
+      console.error(
+        "Error al calificar:",
+        err.response?.data?.msg || err.message
+      );
     }
   };
 

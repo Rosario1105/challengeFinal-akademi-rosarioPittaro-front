@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AlumnoPage = () => {
   const [alumno, setAlumno] = useState(null);
@@ -9,9 +9,9 @@ const AlumnoPage = () => {
   useEffect(() => {
     if (checked) return;
 
-    const user = JSON.parse(localStorage.getItem('userInfo'));
-    if (!user || user.role !== 'alumno') {
-      navigate('/login', { replace: true });
+    const user = JSON.parse(localStorage.getItem("userInfo"));
+    if (!user || user.role !== "alumno") {
+      navigate("/login", { replace: true });
     } else {
       setAlumno(user);
     }
@@ -28,24 +28,24 @@ const AlumnoPage = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <button
-              onClick={() => navigate('/mis-cursos')}
+              onClick={() => navigate("/mis-cursos")}
               className="bg-blue-500 text-white py-3 px-4 rounded-lg shadow hover:bg-blue-600"
             >
               Mis Cursos
             </button>
             <button
-              onClick={() => navigate('/mis-calificaciones')}
-              className="bg-green-500 text-white py-3 px-4 rounded-lg shadow hover:bg-green-600"
+              onClick={() => navigate("/mis-calificaciones")}
+              className="bg-orange-500 text-white py-3 px-4 rounded-lg shadow hover:bg-orange-600"
             >
               Mis Calificaciones
             </button>
 
             <button
-                    className="bg-pink-500 hover:bg-pink-600 text-white text-lg px-6 py-3 rounded-lg"
-                    onClick={() => navigate("/cursos")}
-                  >
-                    Ver Catálogo de Cursos
-                  </button>
+              className="bg-pink-500 hover:bg-pink-600 text-white text-lg px-6 py-3 rounded-lg "
+              onClick={() => navigate("/cursos")}
+            >
+              Ver Catálogo de Cursos
+            </button>
           </div>
         </>
       )}

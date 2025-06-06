@@ -13,7 +13,7 @@ import DetalleCurso from "../components/detalleCurso";
 const CursosAlumPage = () => {
   const [cursos, setCursos] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [cursoSeleccionado, setCursoSeleccionado] = useState(null); // estado para modal
+  const [cursoSeleccionado, setCursoSeleccionado] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -63,7 +63,10 @@ const CursosAlumPage = () => {
                 <Typography>{insc.courseId.description}</Typography>
               </CardBody>
               <CardFooter className="pt-0">
-                <Button className="bg-pink-500 hover:bg-pink-600 text-white text-lg px-6 py-3 rounded-lg"onClick={() => setCursoSeleccionado(insc.courseId._id)}>
+                <Button
+                  className="bg-pink-500 hover:bg-pink-600 text-white text-lg px-6 py-3 rounded-lg"
+                  onClick={() => setCursoSeleccionado(insc.courseId._id)}
+                >
                   Ver detalle
                 </Button>
               </CardFooter>
@@ -73,7 +76,10 @@ const CursosAlumPage = () => {
       </div>
 
       <div className="mt-10 flex gap-4">
-        <Button className="bg-pink-500 hover:bg-pink-600 text-white text-lg px-6 py-3 rounded-lg" onClick={() => navigate("/alumno")}>
+        <Button
+          className="bg-pink-500 hover:bg-pink-600 text-white text-lg px-6 py-3 rounded-lg"
+          onClick={() => navigate("/alumno")}
+        >
           Volver al menú
         </Button>
         <Button color="blue" onClick={() => navigate("/mis-calificaciones")}>

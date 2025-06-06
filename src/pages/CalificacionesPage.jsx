@@ -65,9 +65,7 @@ const CalificacionesPage = () => {
                     <AcademicCapIcon className="h-5 w-5 text-blue-500" />
                   </ListItemPrefix>
                   <div>
-                    <Typography variant="h6">
-                      {nota.courseId.title}
-                    </Typography>
+                    <Typography variant="h6">{nota.courseId.title}</Typography>
                     <Typography variant="small" color="gray">
                       Nota: <strong>{nota.score}</strong>
                       {nota.feedback && ` – ${nota.feedback}`}
@@ -82,12 +80,11 @@ const CalificacionesPage = () => {
 
       <div className="mt-4 ">
         <Button
-    className="bg-orange-500 hover:bg-orange-600 text-white text-lg px-6 py-3 rounded-lg"
-    onClick={() => navigate("/alumno")}
-  >
-    Volver
-  </Button>
-
+          className="bg-orange-500 hover:bg-orange-600 text-white text-lg px-6 py-3 rounded-lg"
+          onClick={() => navigate("/alumno")}
+        >
+          Volver
+        </Button>
       </div>
     </div>
   );

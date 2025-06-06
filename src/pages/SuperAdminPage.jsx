@@ -1,17 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Typography, Card, CardBody } from '@material-tailwind/react';
-import TablaDinamica from '../components/tablaDinam';
-import ModalUsuario from '../components/editarUsuarioMod';
-import { listUsers, deleteUserById, createUser, updateUser } from '../redux/actions/userActions';
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { Typography, Card, CardBody } from "@material-tailwind/react";
+import TablaDinamica from "../components/tablaDinam";
+import ModalUsuario from "../components/editarUsuarioMod";
+import {
+  listUsers,
+  deleteUserById,
+  createUser,
+  updateUser,
+} from "../redux/actions/userActions";
 
 function SuperAdminPage() {
-      console.log('SuperAdminPage renderizado');
+  console.log("SuperAdminPage renderizado");
 
-      const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const { users, loading, error } = useSelector((state) => state.users);
-  console.log('Users redux:', users);
-
+  console.log("Users redux:", users);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
@@ -26,7 +30,7 @@ function SuperAdminPage() {
   };
 
   const handleDelete = (userId) => {
-    if (window.confirm('¿Seguro que querés eliminar este usuario?')) {
+    if (window.confirm("¿Seguro que querés eliminar este usuario?")) {
       dispatch(deleteUserById(userId));
     }
   };
@@ -46,9 +50,9 @@ function SuperAdminPage() {
   };
 
   const columnas = [
-    { key: 'name', label: 'Nombre' },
-    { key: 'email', label: 'Email' },
-    { key: 'role', label: 'Rol' },
+    { key: "name", label: "Nombre" },
+    { key: "email", label: "Email" },
+    { key: "role", label: "Rol" },
   ];
 
   return (
