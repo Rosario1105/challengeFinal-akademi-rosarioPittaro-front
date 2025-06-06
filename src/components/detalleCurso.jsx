@@ -76,13 +76,15 @@ const DetalleCurso = ({ cursoId, onClose }) => {
                 <p className="mb-2">{curso.description}</p>
                 <p className="mb-2">
                   Profesor:{" "}
-                  {curso.professor?.name ||
-                    curso.professorName ||
+                  {curso.profesor?.name ||
+                    curso.profesorName ||
                     "No disponible"}
                 </p>
                 <p className="mb-1">Categoría: {curso.category}</p>
                 <p className="mb-1">Nivel: {curso.level}</p>
                 <p className="mb-1">Capacidad máxima: {curso.capacity}</p>
+                <p className="mb-1">Precio: {curso.price}</p>
+                <p className="mb-1">Descripcion: {curso.description}</p>
                 <p className="mb-4">
                   Inscriptos:{" "}
                   {Array.isArray(curso.inscriptos)

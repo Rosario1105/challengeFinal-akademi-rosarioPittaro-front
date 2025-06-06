@@ -1,50 +1,52 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import DetalleCurso from "../components/detalleCurso";
-
+import TablaDinamica from "../components/tablaDinam";
 const CursosDelProfesor = () => {
   const [cursos, setCursos] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [cursoSeleccionado, setCursoSeleccionado] = useState(null);
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchCursos = async () => {
       try {
-        const token = localStorage.getItem("token");
         const res = await axios.get("/api/courses/profesorId/List", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setCursos(res.data);
       } catch (err) {
-        console.error(err);
-        setError(err.response?.data?.message || "Error al cargar cursos");
-      } finally {
-        setLoading(false);
+        console.error("Error al cargar cursos del profesor", err);
       }
     };
     fetchCursos();
-  }, []);
+  }, [token]);
 
-  if (loading) return <p>Cargando cursos...</p>;
-  if (error) return <p className="text-red-600">{error}</p>;
+  const columnas = [
+    { key: "title", label: "Título", sortable: true },
+    { key: "description", label: "Descripción", sortable: false },
+    {
+      key: "level",
+      label: "Nivel",
+      sortable: true,
+      render: (curso) => curso.level || "Sin especificar",
+    },
+  ];
 
   return (
-    <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {cursos.length === 0 ? (
-        <p>No tenés cursos creados aún.</p>
-      ) : (
-        cursos.map((curso) => (
-          <div
-            key={curso._id}
-            className="border rounded shadow p-4 bg-white cursor-pointer hover:shadow-lg"
-            onClick={() => setCursoSeleccionado(curso._id)}
-          >
-            <h3 className="text-xl font-semibold mb-2">{curso.title}</h3>
-            <p className="text-gray-700">{curso.description}</p>
-          </div>
-        ))
-      )}
+    <div className="p-4">
+      <TablaDinamica
+        data={cursos}
+        columnas={columnas}
+        showSearch={true}
+        showFilter={true}
+        filterField="level"
+        filterOptions={["basico", "intermedio", "avanzado"]}
+        title="Mis Cursos"
+        onEdit={(curso) => setCursoSeleccionado(curso._id)}
+        rowsPerPageOptions={[3, 6, 10]}
+        defaultRowsPerPage={6}
+      />
+
       {cursoSeleccionado && (
         <DetalleCurso
           cursoId={cursoSeleccionado}

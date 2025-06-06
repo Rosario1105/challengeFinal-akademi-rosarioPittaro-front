@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import BotonSalir from "../components/buttonSalir";
 
 const AlumnoPage = () => {
   const [alumno, setAlumno] = useState(null);
@@ -47,6 +48,7 @@ const AlumnoPage = () => {
               Ver Catálogo de Cursos
             </button>
           </div>
+            <BotonSalir/>
         </>
       )}
     </div>

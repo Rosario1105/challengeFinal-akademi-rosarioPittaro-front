@@ -20,8 +20,8 @@ export const listUsers = () => async (dispatch, getState) => {
     };
 
     const { data } = await axios.get('http://localhost:8000/api/users', config);
-
-    dispatch({ type: 'USERS_SUCCESS', payload: data });
+    console.log('Usuarios API:', data)
+    dispatch({ type: 'USERS_SUCCESS', payload: data.data });
   } catch (error) {
     dispatch({
       type: 'USERS_FAIL',

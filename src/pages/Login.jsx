@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../redux/actions/authActions';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import {
   Card,
   Input,
   Button,
   Typography,
 } from '@material-tailwind/react';
-import { useLocation } from 'react-router-dom';
 
 const Login = () => {
   const [form, setForm] = useState({ email: '', password: '' });
@@ -17,45 +16,40 @@ const Login = () => {
   const location = useLocation();
 
   const { loading, error, userInfo } = useSelector(state => state.auth);
-  console.log('userInfo:', userInfo);
 
-useEffect(() => {
-  console.log('Login useEffect:', { userRole: userInfo?.role, currentPath: location.pathname });
-  if (userInfo?.role) {
-    let path = '/';
-    switch (userInfo.role) {
-      case 'alumno':
-        path = '/alumno';
-        break;
-      case 'profesor':
-        path = '/profesor';
-        break;
-      case 'superadmin':
-        path = '/admin';
-        break;
-      default:
-        path = '/';
+  useEffect(() => {
+    if (userInfo?.role) {
+      let path = '/';
+      switch (userInfo.role) {
+        case 'alumno':
+          path = '/alumno';
+          break;
+        case 'profesor':
+          path = '/profesor';
+          break;
+        case 'superadmin':
+          path = '/admin';
+          break;
+        default:
+          path = '/';
+      }
+      if (location.pathname !== path) {
+        navigate(path, { replace: true });
+      }
     }
-    console.log('Navegando a:', path);
-    if (location.pathname !== path) {
-      navigate(path, { replace: true });
-    } else {
-      console.log('Ya está en la ruta correcta, no navega');
-    }
-  }
-}, [userInfo, location.pathname, navigate]);
-
+  }, [userInfo, location.pathname, navigate]);
 
   const handleChange = e => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-    const handleSubmit = async e => {
+  const handleSubmit = async e => {
     e.preventDefault();
     try {
       await dispatch(login(form.email, form.password));
     } catch (error) {}
   };
+
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <Card color="white" shadow={true} className="p-8 w-96">
@@ -90,9 +84,34 @@ useEffect(() => {
             </Typography>
           )}
 
-          <Button type="submit" className="mt-6" fullWidth variant="outlined" disabled={loading}>
+          <Button
+            type="submit"
+            className="mt-6"
+            fullWidth
+            variant="outlined"
+            disabled={loading}
+          >
             {loading ? 'Ingresando...' : 'Ingresar'}
           </Button>
+
+          <Typography
+            as={Link}
+            to="/forgot-password"
+            variant="small"
+            color="blue"
+            className="mt-4 text-center hover:underline block"
+          >
+            ¿Olvidaste tu contraseña?
+          </Typography>
+          <Typography
+            as={Link}
+            to="/register"
+            variant="small"
+            color="blue"
+            className="mt-4 text-center hover:underline block"
+          >
+            Quieres ser alumno? Registrate
+          </Typography>
         </form>
       </Card>
     </div>

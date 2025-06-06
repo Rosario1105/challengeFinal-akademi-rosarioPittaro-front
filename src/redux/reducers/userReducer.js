@@ -11,7 +11,7 @@ const userReducer = (state = initialState, action) => {
     case 'USERS_REQUEST':
       return { ...state, loading: true, error: null };
     case 'USERS_SUCCESS':
-      return { ...state, loading: false, users: action.payload };
+      return { ...state, loading: false, users: action.payload || []};
     case 'USERS_FAIL':
       return { ...state, loading: false, error: action.payload };
 

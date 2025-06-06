@@ -11,6 +11,7 @@ import {
 } from "../redux/actions/userActions";
 
 function SuperAdminPage() {
+
   console.log("SuperAdminPage renderizado");
 
   const dispatch = useDispatch();

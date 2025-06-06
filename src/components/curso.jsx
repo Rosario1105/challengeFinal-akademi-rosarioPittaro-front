@@ -121,15 +121,19 @@ const FormCurso = ({ cursoInicial = null, onSuccess, onClose }) => {
           <label className="block mb-1 font-medium" htmlFor="level">
             Nivel
           </label>
-          <input
-            type="text"
+          <select
             id="level"
             name="level"
             value={form.level}
             onChange={handleChange}
             required
             className="w-full border border-gray-300 rounded px-3 py-2"
-          />
+          >
+            <option value="">Seleccione un nivel</option>
+            <option value="Basico">Basico</option>
+            <option value="Intermedio">Intermedio</option>
+            <option value="Avanzado">Avanzado</option>
+          </select>
         </div>
 
         <div>

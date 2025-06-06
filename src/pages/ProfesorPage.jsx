@@ -5,7 +5,7 @@ import FormCurso from "../components/curso.jsx";
 import CursosDelProfesor from "./CursosProfPage";
 import DetalleAlumno from "../components/detalleAlumno";
 import ModalCalificar from "../components/ModalCalifacion";
-import BotonSalir from "../components/botonSalir.jsx";
+import BotonSalir from "../components/buttonSalir.jsx";
 
 const ProfesorPage = () => {
   const [tab, setTab] = useState("alumnos");

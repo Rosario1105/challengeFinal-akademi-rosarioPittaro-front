@@ -1,18 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 const ModalUsuario = ({ user, onClose, onSave }) => {
-  const [form, setForm] = useState({ name: '', email: '', role: 'profesor', password: '' });
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    role: "profesor",
+    password: "",
+  });
 
   useEffect(() => {
     if (user) {
       setForm({
-        name: user.name || '',
-        email: user.email || '',
-        role: user.role || 'profesor',
-        password: '',
+        name: user.name || "",
+        email: user.email || "",
+        role: user.role || "profesor",
+        password: "",
       });
     } else {
-      setForm({ name: '', email: '', role: 'profesor', password: '' });
+      setForm({ name: "", email: "", role: "profesor", password: "" });
     }
   }, [user]);
 
@@ -28,7 +33,9 @@ const ModalUsuario = ({ user, onClose, onSave }) => {
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-30 z-50">
       <div className="bg-white p-6 rounded shadow max-w-md w-full">
-        <h3 className="text-xl mb-4">{user ? 'Editar Usuario' : 'Crear Usuario'}</h3>
+        <h3 className="text-xl mb-4">
+          {user ? "Editar Usuario" : "Crear Usuario"}
+        </h3>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
@@ -71,10 +78,17 @@ const ModalUsuario = ({ user, onClose, onSave }) => {
           </select>
 
           <div className="flex justify-end gap-4 mt-4">
-            <button type="button" onClick={onClose} className="px-4 py-2 border rounded">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 border rounded"
+            >
               Cancelar
             </button>
-            <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded">
+            <button
+              type="submit"
+              className="px-4 py-2 bg-blue-600 text-white rounded"
+            >
               Guardar
             </button>
           </div>
@@ -85,4 +99,3 @@ const ModalUsuario = ({ user, onClose, onSave }) => {
 };
 
 export default ModalUsuario;
-
