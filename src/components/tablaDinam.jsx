@@ -13,7 +13,6 @@ const TablaDinamica = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState('');
 
-  // Filtrar y buscar en la data
   const filteredData = useMemo(() => {
     let filtered = data;
 
@@ -35,11 +34,17 @@ const TablaDinamica = ({
     return filtered;
   }, [data, filterRole, searchTerm, columnas, showFilter, showSearch]);
 
-  // Obtener roles únicos para filtro
   const roles = useMemo(() => {
-    const setRoles = new Set(data.map(u => u.role));
-    return Array.from(setRoles);
-  }, [data]);
+  const rolesSet = new Set(data.map(u => u.role).filter(Boolean));
+  return Array.from(rolesSet);
+}, [data]);
+
+{roles.map((role, index) => (
+  <option key={`${role}-${index}`} value={role}>
+    {role}
+  </option>
+))}
+
 
   return (
     <div>
@@ -101,8 +106,8 @@ const TablaDinamica = ({
             </tr>
           )}
 
-          {filteredData.map(item => (
-            <tr key={item._id || item.id} className="hover:bg-gray-100">
+          {filteredData.map((item, index) => (
+            <tr key={item._id || item.id || index} className="hover:bg-gray-100">
               {columnas.map(col => (
                 <td key={col.key} className="border px-4 py-2">
                   {item[col.key]}

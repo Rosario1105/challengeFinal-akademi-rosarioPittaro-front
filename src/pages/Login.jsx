@@ -22,25 +22,28 @@ const Login = () => {
 useEffect(() => {
   console.log('Login useEffect:', { userRole: userInfo?.role, currentPath: location.pathname });
   if (userInfo?.role) {
-    let path = '/'
+    let path = '/';
     switch (userInfo.role) {
-        case 'alumno':
-         path= '/alumno';
-          break;
-        case 'profesor':
-          path= '/profesor';
-          break;
-        case 'superadmin':
-          path= '/admin';
-          break;
-        default:
-          navigate('/');
-      }
-      if(location.pathname !== path){
-        navigate(path, {replace: true});
-      }
+      case 'alumno':
+        path = '/alumno';
+        break;
+      case 'profesor':
+        path = '/profesor';
+        break;
+      case 'superadmin':
+        path = '/admin';
+        break;
+      default:
+        path = '/';
     }
-}, [userInfo, navigate, location.pathname]);
+    console.log('Navegando a:', path);
+    if (location.pathname !== path) {
+      navigate(path, { replace: true });
+    } else {
+      console.log('Ya está en la ruta correcta, no navega');
+    }
+  }
+}, [userInfo, location.pathname, navigate]);
 
 
   const handleChange = e => {

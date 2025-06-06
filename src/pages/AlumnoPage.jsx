@@ -3,16 +3,21 @@ import { useNavigate } from 'react-router-dom';
 
 const AlumnoPage = () => {
   const [alumno, setAlumno] = useState(null);
+  const [checked, setChecked] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user'));
+    if (checked) return;
+
+    const user = JSON.parse(localStorage.getItem('userInfo'));
     if (!user || user.role !== 'alumno') {
-      navigate('/login');
+      navigate('/login', { replace: true });
     } else {
       setAlumno(user);
     }
-  }, [navigate]);
+
+    setChecked(true);
+  }, [checked, navigate]);
 
   return (
     <div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-md">
@@ -34,6 +39,13 @@ const AlumnoPage = () => {
             >
               Mis Calificaciones
             </button>
+
+            <button
+                    className="bg-pink-500 hover:bg-pink-600 text-white text-lg px-6 py-3 rounded-lg"
+                    onClick={() => navigate("/cursos")}
+                  >
+                    Ver Catálogo de Cursos
+                  </button>
           </div>
         </>
       )}

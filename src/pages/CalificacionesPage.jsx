@@ -7,14 +7,25 @@ import {
   List,
   ListItem,
   ListItemPrefix,
+  Button,
 } from "@material-tailwind/react";
+import { AcademicCapIcon } from "@heroicons/react/24/solid";
+import { useNavigate } from "react-router-dom";
 
 const CalificacionesPage = () => {
   const [calificaciones, setCalificaciones] = useState([]);
-  const token = localStorage.getItem("token");
-  const user = JSON.parse(localStorage.getItem("user"));
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("userInfo"));
+
+    if (!user || user.role !== "alumno" || !token) {
+      navigate("/login");
+      return;
+    }
+
     const fetchNotas = async () => {
       try {
         const res = await axios.get(
@@ -26,11 +37,13 @@ const CalificacionesPage = () => {
         setCalificaciones(res.data);
       } catch (err) {
         console.error("Error al obtener calificaciones:", err);
+      } finally {
+        setLoading(false);
       }
     };
 
-    if (user?.id) fetchNotas();
-  }, [user, token]);
+    fetchNotas();
+  }, [navigate]);
 
   return (
     <div className="max-w-4xl mx-auto p-6">
@@ -38,7 +51,9 @@ const CalificacionesPage = () => {
         Mis Calificaciones
       </Typography>
 
-      {calificaciones.length === 0 ? (
+      {loading ? (
+        <Typography color="gray">Cargando calificaciones...</Typography>
+      ) : calificaciones.length === 0 ? (
         <Typography color="gray">No hay calificaciones aún.</Typography>
       ) : (
         <Card className="shadow-lg">
@@ -64,6 +79,16 @@ const CalificacionesPage = () => {
           </CardBody>
         </Card>
       )}
+
+      <div className="mt-4 ">
+        <Button
+    className="bg-orange-500 hover:bg-orange-600 text-white text-lg px-6 py-3 rounded-lg"
+    onClick={() => navigate("/alumno")}
+  >
+    Volver
+  </Button>
+
+      </div>
     </div>
   );
 };

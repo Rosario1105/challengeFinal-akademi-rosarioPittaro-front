@@ -9,35 +9,49 @@ import {
 } from "@material-tailwind/react";
 import { useNavigate } from "react-router-dom";
 
+import DetalleCurso from "../components/detalleCurso";
 const CursosAlumPage = () => {
   const [cursos, setCursos] = useState([]);
-  const token = localStorage.getItem("token");
-  const user = JSON.parse(localStorage.getItem('user'));
+  const [loading, setLoading] = useState(true);
+  const [cursoSeleccionado, setCursoSeleccionado] = useState(null); // estado para modal
   const navigate = useNavigate();
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("userInfo"));
+
+    if (!user || !token || user.role !== "alumno") {
+      navigate("/login");
+      return;
+    }
+
     const fetchCursos = async () => {
-      try{
+      try {
         const res = await axios.get(
           `http://localhost:8000/api/enrollments/student/${user.id}`,
           {
-            headers: {Authorization: `Bearer ${token}`},
-        }
+            headers: { Authorization: `Bearer ${token}` },
+          }
         );
         setCursos(res.data);
-      }catch(err){
+      } catch (err) {
         console.error("Error al obtener cursos", err);
+      } finally {
+        setLoading(false);
       }
     };
-    if(user?.id) fetchCursos();
-  }, [user, token]);
 
-  return(
+    fetchCursos();
+  }, [navigate]);
+
+  return (
     <div className="p-6 max-w-6xl mx-auto">
       <h2 className="text-3xl font-bold mb-6">Mis Cursos</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {cursos.length === 0 ? (
+        {loading ? (
+          <p className="text-gray-600">Cargando cursos...</p>
+        ) : cursos.length === 0 ? (
           <p className="text-gray-600">No estás inscripto en ningún curso.</p>
         ) : (
           cursos.map((insc) => (
@@ -49,7 +63,7 @@ const CursosAlumPage = () => {
                 <Typography>{insc.courseId.description}</Typography>
               </CardBody>
               <CardFooter className="pt-0">
-                <Button onClick={() => navigate(`/cursos/${insc.courseId._id}`)}>
+                <Button className="bg-pink-500 hover:bg-pink-600 text-white text-lg px-6 py-3 rounded-lg"onClick={() => setCursoSeleccionado(insc.courseId._id)}>
                   Ver detalle
                 </Button>
               </CardFooter>
@@ -58,15 +72,21 @@ const CursosAlumPage = () => {
         )}
       </div>
 
-      {/* Botones de navegación */}
       <div className="mt-10 flex gap-4">
-        <Button color="gray" onClick={() => navigate('/alumno')}>
-          Volver al menú de alumno
+        <Button className="bg-pink-500 hover:bg-pink-600 text-white text-lg px-6 py-3 rounded-lg" onClick={() => navigate("/alumno")}>
+          Volver al menú
         </Button>
-        <Button color="blue" onClick={() => navigate('/mis-calificaciones')}>
+        <Button color="blue" onClick={() => navigate("/mis-calificaciones")}>
           Ver mis calificaciones
         </Button>
       </div>
+
+      {cursoSeleccionado && (
+        <DetalleCurso
+          cursoId={cursoSeleccionado}
+          onClose={() => setCursoSeleccionado(null)}
+        />
+      )}
     </div>
   );
 };

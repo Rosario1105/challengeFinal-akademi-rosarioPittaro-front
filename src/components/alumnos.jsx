@@ -9,7 +9,7 @@ const AlumnosDelProfesor = () => {
 
  useEffect(() => {
   axios
-    .get('/api/enrollments/alumnos-profesor', {
+    .get('/api/enrollments/student-profesor', {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },

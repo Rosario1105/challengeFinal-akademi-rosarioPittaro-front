@@ -35,7 +35,6 @@ const CursosDelProfesor = () => {
           <div key={curso._id} className="border rounded shadow p-4 bg-white">
             <h3 className="text-xl font-semibold mb-2">{curso.title}</h3>
             <p className="text-gray-700">{curso.description}</p>
-            {/* Podés agregar botones o links para editar, borrar, etc */}
           </div>
         ))
       )}
