@@ -8,6 +8,8 @@ const ModalUsuario = ({ user, onClose, onSave }) => {
     password: "",
   });
 
+  const [error, setError] = useState("");
+
   useEffect(() => {
     if (user) {
       setForm({
@@ -19,6 +21,7 @@ const ModalUsuario = ({ user, onClose, onSave }) => {
     } else {
       setForm({ name: "", email: "", role: "profesor", password: "" });
     }
+    setError(""); 
   }, [user]);
 
   const handleChange = (e) => {
@@ -27,7 +30,23 @@ const ModalUsuario = ({ user, onClose, onSave }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave(form);
+
+    if (!form.name || !form.email) {
+      setError("Nombre y email son obligatorios.");
+      return;
+    }
+
+    if (!user && form.password.length < 6) {
+      setError("La contraseña debe tener al menos 6 caracteres.");
+      return;
+    }
+
+    const dataToSend = { ...form };
+    if (user && !form.password) {
+      delete dataToSend.password;
+    }
+
+    onSave(dataToSend);
   };
 
   return (
@@ -36,6 +55,9 @@ const ModalUsuario = ({ user, onClose, onSave }) => {
         <h3 className="text-xl mb-4">
           {user ? "Editar Usuario" : "Crear Usuario"}
         </h3>
+
+        {error && <p className="text-red-500 mb-2">{error}</p>}
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
@@ -56,17 +78,17 @@ const ModalUsuario = ({ user, onClose, onSave }) => {
             className="w-full border px-3 py-2 rounded"
             disabled={!!user}
           />
-          {!user && (
-            <input
-              type="password"
-              name="password"
-              placeholder="Contraseña"
-              value={form.password}
-              onChange={handleChange}
-              required
-              className="w-full border px-3 py-2 rounded"
-            />
-          )}
+          <input
+            type="password"
+            name="password"
+            placeholder={
+              user ? "Contraseña (opcional)" : "Contraseña (mín. 6 caracteres)"
+            }
+            value={form.password}
+            onChange={handleChange}
+            className="w-full border px-3 py-2 rounded"
+            required={!user}
+          />
           <select
             name="role"
             value={form.role}

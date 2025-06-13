@@ -1,12 +1,14 @@
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { logout } from "../redux/actions/authActions";
 
 const BotonSalir = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("userInfo");
-    navigate("/login");
+    dispatch(logout()); 
+    navigate("/login"); 
   };
 
   return (

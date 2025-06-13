@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Typography, Card, CardBody } from "@material-tailwind/react";
+import { Link } from "react-router-dom";
 import TablaDinamica from "../components/tablaDinam";
 import ModalUsuario from "../components/editarUsuarioMod";
 import {
@@ -9,15 +10,11 @@ import {
   createUser,
   updateUser,
 } from "../redux/actions/userActions";
+import BotonSalir from "../components/buttonSalir";
 
 function SuperAdminPage() {
-
-  console.log("SuperAdminPage renderizado");
-
   const dispatch = useDispatch();
   const { users, loading, error } = useSelector((state) => state.users);
-  console.log("Users redux:", users);
-
   const [modalVisible, setModalVisible] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
 
@@ -58,9 +55,18 @@ function SuperAdminPage() {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-      <Typography variant="h3" className="mb-6 text-center text-blue-700">
+      <Typography variant="h3" className="mb-4 text-center text-blue-700">
         Gestión de Usuarios
       </Typography>
+
+      <div className="flex justify-center mb-6">
+        <Link
+          to="/estadisticas"
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition"
+        >
+          Ver Estadísticas del Sistema
+        </Link>
+      </div>
 
       {loading && <p>Cargando usuarios...</p>}
       {error && <p className="text-red-500">{error}</p>}
@@ -76,6 +82,8 @@ function SuperAdminPage() {
               onCreate={handleCreate}
               showSearch={true}
               showFilter={true}
+              filterField="role"
+              filterOptions={["alumno", "profesor", "superadmin"]}
               title="Usuarios del sistema"
             />
           </CardBody>
@@ -89,6 +97,8 @@ function SuperAdminPage() {
           onSave={handleSave}
         />
       )}
+
+      <BotonSalir />
     </div>
   );
 }

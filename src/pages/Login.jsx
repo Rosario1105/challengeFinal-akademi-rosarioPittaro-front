@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../redux/actions/authActions';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import {
   Card,
   Input,
@@ -13,13 +13,12 @@ const Login = () => {
   const [form, setForm] = useState({ email: '', password: '' });
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
 
-  const { loading, error, userInfo } = useSelector(state => state.auth);
+  const { loading, error, userInfo } = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (userInfo?.role) {
-      let path = '/';
+      let path = '';
       switch (userInfo.role) {
         case 'alumno':
           path = '/alumno';
@@ -31,23 +30,23 @@ const Login = () => {
           path = '/admin';
           break;
         default:
-          path = '/';
+          return; 
       }
-      if (location.pathname !== path) {
+
+      if (window.location.pathname !== path) {
         navigate(path, { replace: true });
       }
     }
-  }, [userInfo, location.pathname, navigate]);
+  }, [userInfo, navigate]);
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      await dispatch(login(form.email, form.password));
-    } catch (error) {}
+    if (!form.email || !form.password) return;
+    dispatch(login(form.email, form.password));
   };
 
   return (
@@ -60,6 +59,7 @@ const Login = () => {
         <form onSubmit={handleSubmit} className="mt-8 mb-2 w-full">
           <div className="mb-4 flex flex-col gap-6">
             <Input
+              type="email"
               name="email"
               label="Correo electrónico"
               size="lg"
@@ -68,9 +68,9 @@ const Login = () => {
               required
             />
             <Input
+              type="password"
               name="password"
               label="Contraseña"
-              type="password"
               size="lg"
               value={form.password}
               onChange={handleChange}
@@ -110,7 +110,7 @@ const Login = () => {
             color="blue"
             className="mt-4 text-center hover:underline block"
           >
-            Quieres ser alumno? Registrate
+            ¿Quieres ser alumno? Registrate
           </Typography>
         </form>
       </Card>

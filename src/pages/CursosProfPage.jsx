@@ -2,15 +2,21 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import DetalleCurso from "../components/detalleCurso";
 import TablaDinamica from "../components/tablaDinam";
+
 const CursosDelProfesor = () => {
   const [cursos, setCursos] = useState([]);
   const [cursoSeleccionado, setCursoSeleccionado] = useState(null);
   const token = localStorage.getItem("token");
 
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const profesorId = userInfo?._id || userInfo?.id;
+
   useEffect(() => {
+    if (!profesorId) return; 
+
     const fetchCursos = async () => {
       try {
-        const res = await axios.get("/api/courses/profesorId/List", {
+        const res = await axios.get(`/api/courses/profesor/${profesorId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setCursos(res.data);
@@ -19,7 +25,7 @@ const CursosDelProfesor = () => {
       }
     };
     fetchCursos();
-  }, [token]);
+  }, [token, profesorId]);
 
   const columnas = [
     { key: "title", label: "Título", sortable: true },

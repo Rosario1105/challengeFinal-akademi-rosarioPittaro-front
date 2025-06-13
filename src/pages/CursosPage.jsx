@@ -27,6 +27,7 @@ const Cursos = () => {
 
   const inscribirse = async (courseId) => {
     try {
+      console.log("Inscribiéndose con courseId:", courseId);
       await axios.post(
         "http://localhost:8000/api/enrollments",
         { courseId },
@@ -35,32 +36,32 @@ const Cursos = () => {
         }
       );
       alert("Inscripción exitosa");
-      window.location.href = "/mis-cursos";
+      navigate("/mis-cursos");
     } catch (err) {
-      alert(err.response?.data?.message || "Error al inscribirse");
+      alert(err.response?.data?.msg || "Error al inscribirse");
     }
   };
 
   useEffect(() => {
-   const fetchCursos = async () => {
-  try {
-    const res = await axios.get("http://localhost:8000/api/courses", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (res.data && Array.isArray(res.data.data)) {
-      setCursos(res.data.data);
-      setFilteredCursos(res.data.data);
-    } else {
-      console.error("La respuesta de cursos no es un array:", res.data);
-      setCursos([]);
-      setFilteredCursos([]);
-    }
-  } catch (err) {
-    console.error("Error al cargar cursos", err);
-    setCursos([]);
-    setFilteredCursos([]);
-  }
-};
+    const fetchCursos = async () => {
+      try {
+        const res = await axios.get("http://localhost:8000/api/courses", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.data && Array.isArray(res.data.data)) {
+          setCursos(res.data.data);
+          setFilteredCursos(res.data.data);
+        } else {
+          console.error("La respuesta de cursos no es un array:", res.data);
+          setCursos([]);
+          setFilteredCursos([]);
+        }
+      } catch (err) {
+        console.error("Error al cargar cursos", err);
+        setCursos([]);
+        setFilteredCursos([]);
+      }
+    };
 
     fetchCursos();
   }, [token]);
@@ -74,7 +75,7 @@ const Cursos = () => {
         c.description.toLowerCase().includes(search.toLowerCase())
     );
     setFilteredCursos(filtered);
-    setCurrentPage(1); 
+    setCurrentPage(1);
   }, [search, cursos]);
 
   const lastIndex = currentPage * cursosPerPage;
@@ -125,7 +126,9 @@ const Cursos = () => {
               Profesor: {curso.profesor?.name || "Sin asignar"}
             </p>
             <div className="flex justify-between items-center mt-3">
-              <span className="text-green-600 font-semibold">${curso.price}</span>
+              <span className="text-green-600 font-semibold">
+                ${curso.price}
+              </span>
               <button
                 onClick={async (e) => {
                   e.stopPropagation();
@@ -164,7 +167,9 @@ const Cursos = () => {
         <Button
           variant="outlined"
           size="sm"
-          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+          onClick={() =>
+            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+          }
           disabled={currentPage === totalPages}
         >
           Siguiente
@@ -181,7 +186,10 @@ const Cursos = () => {
       </div>
 
       {cursoSeleccionado && (
-        <DetalleCurso cursoId={cursoSeleccionado} onClose={() => setCursoSeleccionado(null)} />
+        <DetalleCurso
+          cursoId={cursoSeleccionado}
+          onClose={() => setCursoSeleccionado(null)}
+        />
       )}
     </Card>
   );

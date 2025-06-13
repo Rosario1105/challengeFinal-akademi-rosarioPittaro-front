@@ -2,13 +2,15 @@ import { Navigate, Outlet } from "react-router-dom";
 
 const PrivateRoute = ({ allowedRoles }) => {
   let user = null;
+  let token = null;
+
   try {
-    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    user = userInfo || null;
+    user = JSON.parse(localStorage.getItem("userInfo"));
+    token = localStorage.getItem("token");
   } catch (error) {
     user = null;
+    token = null;
   }
-  const token = localStorage.getItem("token");
 
   if (!token || !user) {
     return <Navigate to="/login" replace />;

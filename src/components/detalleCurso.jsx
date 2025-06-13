@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import FormCurso from "../components/curso";
-const DetalleCurso = ({ cursoId, onClose }) => {
+
+const DetalleCurso = ({ cursoId, onClose, enrollmentId }) => {
   const [curso, setCurso] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showEditar, setShowEditar] = useState(false);
@@ -48,6 +49,28 @@ const DetalleCurso = ({ cursoId, onClose }) => {
   };
 
   if (!cursoId) return null;
+
+  const handleCancelarInscripcion = async () => {
+    const confirmar = window.confirm(
+      "¿Querés cancelar tu inscripción en este curso?"
+    );
+    if (!confirmar) return;
+
+    try {
+      await axios.delete(
+        `http://localhost:8000/api/enrollments/${enrollmentId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      alert("Inscripción cancelada con éxito.");
+      onClose();
+    } catch (error) {
+      console.error("Error al cancelar inscripción", error);
+      alert(error.response?.data?.message || "Error al cancelar inscripción.");
+    }
+  };
 
   return (
     <>
@@ -105,6 +128,17 @@ const DetalleCurso = ({ cursoId, onClose }) => {
                       className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
                     >
                       Eliminar
+                    </button>
+                  </div>
+                )}
+
+                {rol === "alumno" && enrollmentId && (
+                  <div className="mt-4">
+                    <button
+                      onClick={handleCancelarInscripcion}
+                      className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                    >
+                      Cancelar inscripción
                     </button>
                   </div>
                 )}

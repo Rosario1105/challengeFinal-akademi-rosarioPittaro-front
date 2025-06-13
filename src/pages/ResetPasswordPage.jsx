@@ -1,4 +1,3 @@
-// src/pages/ResetPasswordPage.jsx
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
@@ -10,7 +9,6 @@ export default function ResetPasswordPage() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
-  // Solo para depurar: esto debe imprimirse en consola cuando visites la URL
   useEffect(() => {
     console.log("ResetPasswordPage montado. Token:", token);
   }, [token]);
@@ -26,19 +24,19 @@ export default function ResetPasswordPage() {
     }
 
     try {
-      const res = await fetch("http://localhost:8000/api/auth/reset-password", {
+      const res = await fetch(`http://localhost:8000/api/auth/reset-password/${token}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, password }),
+        body: JSON.stringify({ password }),
       });
 
       const data = await res.json();
+
       if (!res.ok) {
         throw new Error(data.message || "Error al resetear la contraseña");
       }
 
       setMessage("Contraseña actualizada correctamente. Serás redirigido al login.");
-      // Después de 2 segundos, redirigimos al login
       setTimeout(() => navigate("/login"), 2000);
     } catch (err) {
       setError(err.message);
@@ -48,8 +46,6 @@ export default function ResetPasswordPage() {
   return (
     <div style={{ maxWidth: 400, margin: "auto", padding: 20 }}>
       <h2>Restablecer contraseña</h2>
-      {/* Mostramos el token para verificar que llegó bien */}
-      <p>Token recibido: <code>{token}</code></p>
 
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         <div>

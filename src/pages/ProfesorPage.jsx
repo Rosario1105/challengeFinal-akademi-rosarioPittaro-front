@@ -50,20 +50,21 @@ const ProfesorPage = () => {
     }
   };
 
-  const recargarAlumnos = async () => {
-    const token = localStorage.getItem("token");
-    try {
-      const { data } = await axios.get("/api/enrollments/student-profesor", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setAlumnos(data);
-      cerrarModalCalificar();
-    } catch (error) {
-      console.error("Error al recargar alumnos:", error);
-    }
-  };
+ const recargarAlumnos = async () => {
+  const token = localStorage.getItem("token");
+  try {
+    const { data } = await axios.get("/api/enrollments/student-profesor", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setAlumnos(data.data);  
+    cerrarModalCalificar();
+  } catch (error) {
+    console.error("Error al recargar alumnos:", error);
+  }
+};
+
 
   useEffect(() => {
     recargarAlumnos();
@@ -78,8 +79,8 @@ const ProfesorPage = () => {
 
   return (
     <div className="p-6">
-      <div className="flex space-x-4 border-b border-gray-200 mb-6">
         <BotonSalir />
+      <div className="flex space-x-4 border-b border-gray-200 mb-6">
         <button
           className={tabStyle(tab === "alumnos")}
           onClick={() => setTab("alumnos")}

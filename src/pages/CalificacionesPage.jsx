@@ -75,7 +75,7 @@ const CalificacionesPage = () => {
       <Typography variant="h6">{nota.courseId?.title ?? "Curso no disponible"}</Typography>
       <Typography variant="small" color="gray">
         Nota: <strong>{nota.score}</strong>
-        {nota.feedback && ` – ${nota.feedback}`}
+        {nota.feedback && ` - ${nota.feedback}`}
       </Typography>
     </div>
   </ListItem>

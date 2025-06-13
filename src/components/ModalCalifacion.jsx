@@ -18,8 +18,8 @@ const ModalCalificar = ({ alumno, onClose, onSubmit }) => {
       return;
     }
 
-    if (score === "" || score < 0 || score > 10) {
-      setError("La calificación debe estar entre 0 y 10.");
+    if (score === "" || score < 0 || score > 100) {
+      setError("La calificación debe estar entre 0 y 100.");
       return;
     }
 
@@ -64,7 +64,7 @@ const ModalCalificar = ({ alumno, onClose, onSubmit }) => {
         {error && <p className="text-red-600 text-sm mb-2">{error}</p>}
 
         <div className="mb-4">
-          <label className="block mb-1 font-medium">Puntaje (0-10):</label>
+          <label className="block mb-1 font-medium">Puntaje (0-100):</label>
           <input
             type="number"
             value={score}

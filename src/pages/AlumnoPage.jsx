@@ -4,21 +4,17 @@ import BotonSalir from "../components/buttonSalir";
 
 const AlumnoPage = () => {
   const [alumno, setAlumno] = useState(null);
-  const [checked, setChecked] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (checked) return;
+  const user = JSON.parse(localStorage.getItem("userInfo"));
+  if (!user || user.role !== "alumno") {
+    navigate("/login", { replace: true });
+  } else {
+    setAlumno(user);
+  }
+}, [navigate]); 
 
-    const user = JSON.parse(localStorage.getItem("userInfo"));
-    if (!user || user.role !== "alumno") {
-      navigate("/login", { replace: true });
-    } else {
-      setAlumno(user);
-    }
-
-    setChecked(true);
-  }, [checked, navigate]);
 
   return (
     <div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-md">
@@ -47,8 +43,8 @@ const AlumnoPage = () => {
             >
               Ver Catálogo de Cursos
             </button>
-          </div>
             <BotonSalir/>
+          </div>
         </>
       )}
     </div>

@@ -14,13 +14,13 @@ export const login = (email, password) => async (dispatch) => {
     console.log("Respuesta login:", data);
 
     if (!response.ok || !data.user) {
-      dispatch({ type: 'AUTH_LOGIN_FAIL', payload: data.msg || 'Error desconocido' });
+      dispatch({ type: 'AUTH_LOGIN_FAIL', payload: data.msg || 'Correo electronico o contraseña incorrectos' });
       return;
     }
 
     dispatch({ 
       type: 'AUTH_LOGIN_SUCCESS', 
-      payload: data.user  // Aquí debes usar `data.user`, no `res.data.user`
+      payload: data.user  
     });
 
     localStorage.setItem('token', data.token);

@@ -115,6 +115,7 @@ const TablaDinamica = ({
             className="border px-2 py-1 rounded"
           >
             <option value="">Todos</option>
+            
             {filterOptions.map((opt, index) => (
               <option key={index} value={opt}>
                 {opt}

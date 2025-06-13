@@ -13,7 +13,7 @@ export const listUsers = () => async (dispatch, getState) => {
     dispatch({ type: 'USERS_REQUEST' });
 
     const token = getTokenFromStateOrStorage(getState);
-    if (!token) throw new Error('No token found');
+    if (!token) throw new Error('No se encontró ningún token');
 
     const config = {
       headers: { Authorization: `Bearer ${token}` },
@@ -35,7 +35,7 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
     dispatch({ type: 'USER_DETAILS_REQUEST' });
 
     const token = getTokenFromStateOrStorage(getState);
-    if (!token) throw new Error('No token found');
+    if (!token) throw new Error('No se encontró ningún token');
 
     const config = { headers: { Authorization: `Bearer ${token}` } };
 
@@ -55,7 +55,7 @@ export const createUser = (user) => async (dispatch, getState) => {
     dispatch({ type: 'USER_CREATE_REQUEST' });
 
     const token = getTokenFromStateOrStorage(getState);
-    if (!token) throw new Error('No token found');
+    if (!token) throw new Error('No se encontró ningún token');
 
     const config = {
       headers: { 
@@ -80,7 +80,7 @@ export const updateUser = (id, user) => async (dispatch, getState) => {
     dispatch({ type: 'USER_UPDATE_REQUEST' });
 
     const token = getTokenFromStateOrStorage(getState);
-    if (!token) throw new Error('No token found');
+    if (!token) throw new Error('No se encontró ningún token');
 
     const config = {
       headers: { 
@@ -105,7 +105,7 @@ export const deleteUserById = (id) => async (dispatch, getState) => {
     dispatch({ type: 'USER_DELETE_REQUEST' });
 
     const token = getTokenFromStateOrStorage(getState);
-    if (!token) throw new Error('No token found');
+    if (!token) throw new Error('No se encontró ningún token');
 
     const config = { headers: { Authorization: `Bearer ${token}` } };
 
